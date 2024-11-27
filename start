@@ -1,0 +1,66 @@
+#bin/bash
+
+cd /
+
+comm="."
+
+if [ "$1" == "-r" ]
+then
+    string=$2
+    counter=0
+    while IFS= read -r line;do
+        a=(${line//"="/ })
+        if [ "$2" == "${a[0]}" ]
+        then
+            comm=${a[1]}
+            counter=1
+            echo "$comm"
+            break
+        fi
+        #echo ${a[0]} $string
+    done < /home/mimir/Appimages/command
+
+    if [ $counter == "0" ]
+    then
+        echo "not a valad command, try to set the command first with start < -w > <command name> <exectuable file path>"
+    else
+        r=${comm//\"}
+        cd /
+        nohup .$r &
+        clear
+    fi
+
+
+#if else statement for write command
+elif [ "$1" == "-c" ]
+then
+    while IFS= read -r line;do
+        a=(${line//"="/ })
+        echo ${a[0]} $string
+    done < /home/mimir/Appimages/command
+
+
+
+elif [ "$1" == "-w" ]
+then
+    dpath=`which start | awk '{ print substr( $0, 1, length($0)-5 ) }'`
+    if [ -z "$3" ]
+    then 
+        echo "enter the path too"
+
+    else
+        com=$2"="$3
+        echo $com
+        echo $com >> /home/mimir/Appimages/command
+    fi
+
+
+
+
+else
+    echo "usage start -r  <command name> | start -w  <command name> <exectuable file path> | start -c "
+    echo "-r to read command"
+    echo "-w to write command and then pass a command name and then command location"
+    echo "-c is to show all the possible command option"
+
+fi
